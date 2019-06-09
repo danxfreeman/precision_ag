@@ -1,6 +1,5 @@
 # Load libraries.
-#pip install ibm_watson
-from ibm_watson import VisualRecognitionV3
+from ibm_watson import VisualRecognitionV3 # pip install ibm_watson
 import os
 import pandas as pd
 import numpy as np
@@ -17,41 +16,51 @@ visual_recognition = VisualRecognitionV3(
 def train_model(model_name, ns_train, stress_train):
     with open(ns_train, 'rb') as ns, open(stress_train ,'rb') as stress:
         try:
-          print("Training model:", model_name)
+          print("Training model", model_name)
           model = visual_recognition.create_classifier(
               name = model_name,
-              positive_examples = {'stress': stress, 'no_stress': ns}).get_result()
+              positive_examples = {'stress': stress},
+              negative_examples = ns).get_result()
           return(model)
         except Exception as ex:
-          print("Failed to train model:", model_name)
+          print("Failed to train model", model_name)
           print("Error: ", ex)
 
 # Wait until model is trained.
 def wait(modelID):
-    # Loop indefinitely or until status changes.
-    status = 0
-    while status == 0:
+    # Loop indefinitely.
+    while True:
         # Get status of all models.
-        classifiers = visual_recognition.list_classifiers().get_result()
+        classifiers = visual_recognition.list_classifiers(verbose=True).get_result()
         # Get status of specific model.
         for c in classifiers['classifiers']:
             if c['classifier_id'] == modelID:
-                # If ready, break loop.
-                if c['status'] == 'ready':
-                    status = 1
-                    print('Model ready')
-                # If not ready, wait 30 seconds and try again.
-                else:
-                    print('Pinged', modelID, time.ctime())
-                    time.sleep(30)
+                status = c['status']  
+                break
+        # If ready, break loop.
+        if status == 'ready':
+            print(modelID, 'ready')
+            break
+        # If training, wait 30 seconds and try again.
+        if status == 'training':
+            print('Pinged', modelID, time.ctime())
+            time.sleep(30)
+            continue
+        # If failed, return explanation.
+        if status == 'failed':
+            print(modelID, 'failed')
+            print(c['explanation'])
+            break
+        # Temp.
+        print(modelID)
+        print(status)
 
 # Test zip.
 def test_images(modelID, test_path):
-    print('Testing', modelID)
     with open(test_path, 'rb') as images_file:
         response = visual_recognition.classify(
             images_file,
-            threshold = 0 ,
+            threshold = '0',
             classifier_ids = [modelID]).get_result()
     return(response)
 
@@ -78,7 +87,7 @@ def res_to_df(response):
 # Wrapper function tests positive and negative test sets and returns
 # concatenated dataframe.
 def test_multiple(modelID, stress_test, ns_test):
-    print("Testing model:", modelID)
+    print("Testing model", modelID)
     # Test stress images.
     stress_res = test_images(modelID, stress_test)
     stress_df = res_to_df(stress_res)
@@ -134,30 +143,40 @@ def save(dic, path):
     # Save dataframe.
     df.to_csv(path)
 
-# Wrapper function train, tests, and assesses model.
-def pipeline(model_name, stress_train, ns_train, stress_test, ns_test,
-             pred_save, perf_save, trained, parent = os.getcwd()):
+# Wrapper function trains model and returns modelID.
+def pipeline_train(model_name, stress_train, ns_train, parent = os.getcwd()):
     #
     # Args:
-    #   stress_train, ns_train, stress_test, ns_test: paths to zip files
-    #   containing test and training sets for stress and no stress conditions.
-    #   predictions: path to directory where image-level predictions will be saved.
-    #   performance: path to csv file to which model performance will be appended.
-    #   trained: path to directory where images will be moved to after use.
-    #   parent: working directory.
+    #   model_name: what to name the model.
+    #   stress_train, ns_train: paths to zip files containing training sets of
+    #   'stress' and 'no stress' images.
+    #   parent: working directory (default to current).
     #
     # Change directory.
     os.chdir(parent)
     # Train model.
     modelID = train_model(model_name, ns_train, stress_train)['classifier_id']
-    # Wait until model is trained.
-    wait(modelID)
-    # Test model and save.
+    # Return modelID.
+    return(modelID)
+    
+# Wrapper function tests model and returns performance metrics.
+def pipeline_test(modelID, stress_train, ns_train, stress_test, ns_test,
+                  pred_save, perf_save, trained):
+    #
+    # Args:
+    #   modelID: modelID returned by 'pipeline_train'
+    #   stress_test, ns_test: paths to zip files containing test and training
+    #   sets of 'stress' and 'no stress' images.
+    #   pred_save: path to directory where image-level predictions will be saved.
+    #   perf_save: path to csv file to which model performance metrics will be appended.
+    #   trained: path to directory where images will be moved to after use.
+    #
+    # Test model.
     pred = test_multiple(modelID, stress_test, ns_test)
-    # Save dataframe.
+    # Save predictions.
     full_path = os.path.join(pred_save, modelID + '.csv')
     pred.to_csv(full_path)
-    # Assesss performance.
+    # Calculate and return performance metrics.
     perf = performance(pred)
     return(perf)
     # Append image paths and timestamp.
@@ -166,49 +185,34 @@ def pipeline(model_name, stress_train, ns_train, stress_test, ns_test,
     perf['stress_test'] = stress_test
     perf['ns_test'] = ns_test 
     perf['time'] = time.ctime()
-    # Save as csv.
+    # Append to 'perf_save' csv.
     save(perf, perf_save)
+    # Moved images to 'trained' directory.
+    if trained != '':
+        os.rename(stress_train, os.path.join(trained, os.path.basename(stress_train)))
+        os.rename(ns_train, os.path.join(trained, os.path.basename(ns_train)))
+        os.rename(stress_test, os.path.join(trained, os.path.basename(stress_test)))
+        os.rename(ns_test, os.path.join(trained, os.path.basename(ns_test)))
+    print('Done')
 
-# Bud: NS v. HWS.
-pipeline(model_name = 'MAPIR_bud_HWS_k1',
-         parent = '/Users/danielfreeman/Desktop/ag/',
-         stress_train = 'split/MAPIR_FLT2_Buddleia_high_water_stress_k1_train.zip',
-         ns_train = 'split/MAPIR_FLT2_Buddleia_no_stress_k1_train.zip',
-         stress_test = 'split/MAPIR_FLT2_Buddleia_high_water_stress_k1_test.zip',
-         ns_test = 'split/MAPIR_FLT2_Buddleia_no_stress_k1_test.zip',
-         pred_save = 'Results/',
-         perf_save = 'Results/performance.csv')
+# Example ----
 
-## Bud: NS v. S.
-#pipeline(model_name = 'MAPIR_bud_WS_k1',
-#         parent = '/Users/danielfreeman/Desktop/ag/',
-#         stress_train = 'split2/MAPIR_FL2_Buddleia_stress_train_k1',
-#         ns_train = 'split2/MAPIR_FL2_Buddleia_no_stress_train_k1',
-#         stress_test = 'split2/MAPIR_FL2_Buddleia_stress_test_k1',
-#         ns_test = 'split2/MAPIR_FL2_Buddleia_no_stress_test_k1',
-#         pred_to = 'Results/',
-#         perf_to = 'Results/performance.csv')
-#
-## All: NS v. S
-#pipeline(model_name = 'MAPIR_all_WS_k1',
-#         parent = '/Users/danielfreeman/Desktop/ag/',
-#         stress_train = 'split3/MAPIR_FL2_pool_stress_train_k1',
-#         ns_train = 'split3/MAPIR_FL2_pool_no_stress_train_k1',
-#         stress_test = 'split3/MAPIR_FL2_pool_stress_test_k1',
-#         ns_test = 'split3/MAPIR_FL2_pool_no_stress_test_k1',
-#         pred_to = 'Results/',
-#         perf_to = 'Results/performance.csv')
-#
-#pipeline(model_name = '',
-#         parent = '',
-#         stress_train = '',
-#         ns_train = '',
-#         stress_test = '',
-#         ns_test = '',
-#         pred_to = '',
-#         perf_to = '')
-#        
+# MAPIR Buddeleia: NS v. HWS.
+model_name = 'MAPIR_bud_HWS_k1'
+parent = '/Users/danielfreeman/Desktop/ag/'
+stress_train = 'Split/MAPIR_FLT2_Buddleia_high_water_stress_k1_train.zip'
+ns_train = 'Split/MAPIR_FLT2_Buddleia_no_stress_k1_train.zip'
+stress_test = 'Split/MAPIR_FLT2_Buddleia_high_water_stress_k1_test.zip'
+ns_test = 'Split/MAPIR_FLT2_Buddleia_no_stress_k1_test.zip'
+pred_save = 'Results/'
+perf_save = 'Results/performance.csv'
+trained = 'Trained/'
+modelID = pipeline_train(model_name, stress_train, ns_train, parent)
+#modelID = MAPIR_bud_HWS_k1_1318838362
+wait(modelID)
+perf = pipeline_test(modelID, stress_train, ns_train, stress_test, ns_test,
+                     pred_save, perf_save, trained)
+perf
 
-
-
-
+# MAPIR_bud_HWS_k1_257413000 # two classes
+# MAPIR_bud_HWS_k1_1318838362 # negative class
