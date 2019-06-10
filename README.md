@@ -55,7 +55,7 @@ Move original drone images to the subdirectory `Images`
 * image_path: path to directory containing cropped images (may contain subdirectories)
 * to_path: path to directory where split images will be saved (must already exist)
 
-> Here is the basic workflow:
+> Here is the basic workflow of `index.R`:
 > * Calculate the center of each bounding box (`dat$x_center` and `dat$y_center`).
 > * Subset combinations of dataset, species, and condition (`dat$model`) and loop through each image (`dat$image`).
 > * Normalize each axis to a 0 to 1 range (`model$x_norm` and `model$y_norm`).
