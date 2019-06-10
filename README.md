@@ -72,12 +72,12 @@ You can also modify data by manipulating the object `dat`. For example, you can 
 ## Model
 
 > The Watson API bills your account for every run of `pipeline_train` so ensure that previous steps were successful before moving on. The following checkpoints can help:
-> * The script `function2` confirms that each image has the same number of plants in each condition.
-> * Each cropped image appears exactly once within the directory `Split`.
-> * Image names match subdirectory names.
-> * Training and test sets contain multiple images of the same plant (you can sometimes tell by looking at the plant's shape).
+> * `function2` confirms that each image has the same number of plants in each condition
+> * Each cropped image appears exactly once within the directory `Split`
+> * Cropped image names match directory names
+> * Training and test sets contain multiple images of the same plant (you can sometimes tell by looking at the plant's shape)
 
-1.) Access cloud. Learn how to find your API key [here](https://cloud.ibm.com/docs/services/watson?topic=watson-iam).
+1.) Access cloud using an [IAM key](https://cloud.ibm.com/docs/services/watson?topic=watson-iam).
 
 ```python
 visual_recognition = VisualRecognitionV3(
@@ -90,7 +90,7 @@ visual_recognition = VisualRecognitionV3(
 
 * model_name: what to name the model (e.g. `'MAPIR_hq_HWS_k1'`)
 * parent: working directory (defaults to current)
-* stress_train, ns_train: paths to training set zip files
+* stress_train, ns_train: paths to zip files containing stress and no_stress images
 * log: path to csv file to which model information will be appended (defaults to `'Results/Log.csv'`)
 
 > `Log.csv` automatically updates itself on every run of `pipeline_train` and documents training set paths.
