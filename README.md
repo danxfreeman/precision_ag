@@ -27,6 +27,8 @@ Move original drone images to the subdirectory `Images`
 
 ## Crop Images in Labelbox
 
+> Summary...
+
 1.) Set up Labelbox...
 
 > Each image of the same plot must have the same orientation. Rotate image if necessary.
@@ -38,6 +40,8 @@ Move original drone images to the subdirectory `Images`
 3.) Use the functions `function1` and `function2` to ensure that plots are correctly labelled before moving on.
 
 ## Pull Cropped Images with the Labelbox API
+
+> Summary...
 
 1.) Pull coordinates from Labelbox...
 
