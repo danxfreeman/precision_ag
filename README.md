@@ -1,6 +1,10 @@
 Precision Ag
 ====
 
+This pipeline uses the IBM Watson Visual Recogntiion API to identify plants that have been subject to water deprivation. The pipeline uses drone images to crop fields taken in various spectra.
+
+![alt text](Users/danielfreeman/Desktop/ag/Iamges/2017_0810_145123_112.JPG "Logo Title Text 1")
+
 ## Setup
 
 Install the Watson API package by entering the command `pip install --upgrade ibm-watson` in Terminal
@@ -104,6 +108,6 @@ visual_recognition = VisualRecognitionV3(
 
 The [AUC (Area Under The Curve) ROC (Receiver Operating Characteristics) curve](https://towardsdatascience.com/understanding-auc-roc-curve-68b2303cc9c5) is most direct measure of how well the model distinguishes between classes. An AUC of 0 means that the model mis-classified every image. When AUC is 0.5, model performance is equal to random chance. An excellect model has an AUC approaching 1.
 
-Four-fold cross-validation helps assess generalizability. By calculating the standard deviation in ROC-AUC of the four folds, we can determine how sensitive results are to variation within the data.
+Four-fold cross-validation helps assess generalizability. By calculating the standard deviation in ROC-AUC between the four folds, we can determine the extent to which performance metrics are sensitive to variations in data.
 
 High ROC-AUC and low standard deviation indicates that models demonstrate high seperability and high generalizability. 
