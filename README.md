@@ -1,9 +1,21 @@
 Precision Ag
 ====
 
-This pipeline uses the IBM Watson Visual Recogntiion API to identify plants that have been subject to water deprivation. The pipeline uses drone images to crop fields taken in various spectra.
+This pipeline uses the IBM Watson Visual Recognition API to identify plants that have been subject to water deprivation. The pipeline uses drone images of crop fields taken in various spectra.
 
-![alt text](Users/danielfreeman/Desktop/ag/Iamges/2017_0810_145123_112.JPG "Logo Title Text 1")
+> Drone image taken in ultraviolet:
+![Image1](https://github.com/danxfreeman/precision_ag/blob/master/IMG_7578.JPG)
+
+> Drone image taken in near-infrared:
+![Image2](https://github.com/danxfreeman/precision_ag/blob/master/2017_0810_145135_118.JPG)
+
+Here is the basic workflow:
+
+* Upload images to Labelbox and draw bounding boxes
+* Get bounding box coordinates and crop images with `work_data.py`
+* Group images into test and training sets with `index.R`
+* Train, test, and assess models with `predict.py`
+* Interpret results
 
 ## Setup
 
@@ -33,11 +45,11 @@ Move original drone images to the subdirectory `Images`
 
 ## Split Cropped Images
 
-> Because the drone takes multiple images of the same plot, it’s important that cropped images of the same plant don’t end up in the test set *and* the training set. Index.R loops through each image of the same plot and assigns a numeric id to each plant based on its location. This way, for example, all images of plants 1 to 6 end up in the training set and all images of plants 7 and 8 end up in the test set.
+> Because the drone takes multiple images of the same plot, it’s important that cropped images of the same plant don’t end up in the test set *and* the training set. `index.R` loops through each image of the same plot and assigns a numeric id to each plant based on its location. This way, for example, all images of plants 1 to 6 end up in the training set and all images of plants 7 and 8 end up in the test set.
 
 1). If neccessary, download required libraries by entering the commands `install.packages("spatstat")` and `install.packages("tidyverse")` into the console.
 
-2). Update the following arguments in Index.R and run.
+2). Update the following arguments in `index.R` and run.
 
 * coord_path: path to csv file created by `work_data.py`
 * image_path: path to directory containing cropped images (may contain subdirectories)
@@ -55,13 +67,11 @@ You can also modify data by manipulating the object `dat`. For example, you can 
 
 ## Model
 
-> The Watson API bills your account for every run of `pipeline_train`. Ensure that previous steps were successful by performing the following checks:
+> The Watson API bills your account for every run of `pipeline_train` so ensure that previous steps were successful before moving on. The following checkpoints can help:
 > * The script `function2` confirms that each image has the same number of plants in each condition.
 > * Each cropped image appears exactly once within the directory `Split`.
 > * Image names match subdirectory names.
 > * Training and test sets contain multiple images of the same plant (you can sometimes tell by looking at the plant's shape).
-
-
 
 1.) Access cloud. Learn how to find your API key [here](https://cloud.ibm.com/docs/services/watson?topic=watson-iam).
 
