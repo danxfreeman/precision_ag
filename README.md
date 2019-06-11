@@ -62,7 +62,7 @@ Move original drone images to the subdirectory `Images`
 > Here is the basic workflow of `index.R`:
 > * Calculate the center of each bounding box (`dat$x_center` and `dat$y_center`).
 > * Subset combinations of dataset, species, and condition (`dat$model`) and loop through each image (`dat$image`).
-> * Normalize each axis to a 0 to 1 range (`model$x_norm` and `model$y_norm`).
+> * Normalize each axis to a 0 to 1 range (`image$x_norm` and `image$y_norm`).
 > * Perform one-to-one matching with a reference image and assign numeric id (`image$position`).
 > * Match each row in `coord_path` with each image in `image_path` using the column `df$id` and the last number in the image name (e.g. `*_123.JPG`).
 > * Group images into four-fold training and test sets and zip.
@@ -90,10 +90,10 @@ visual_recognition = VisualRecognitionV3(
 
 * model_name: what to name the model (e.g. `'MAPIR_hq_HWS_k1'`)
 * parent: working directory (defaults to current)
-* stress_train, ns_train: paths to zip files containing stress and no_stress images
+* stress_train, ns_train: paths to zip files containing stress and no_stress training set images
 * log: path to csv file to which model information will be appended (defaults to `'Results/Log.csv'`)
 
-> `Log.csv` automatically updates itself on every run of `pipeline_train` and documents training set paths.
+> `Log.csv` automatically updates itself on every run of `pipeline_train` and documents the image sets used to train each mode.
 
 3.) Save modelID in comments (this is different from `model_name`).
 
@@ -104,7 +104,7 @@ visual_recognition = VisualRecognitionV3(
 5.) Test model with `pred = pipeline_test(...)`.
 
 * modelID: modelID returned by `pipeline_train`
-* stress_test, ns_test: paths to test set zip files
+* stress_test, ns_test: paths to zip files containing stress and no_stress test set images
 * pred_save: path to directory where image-level predictions will be saved
 * trained: path to directory to which images will be moved to after use (set `trained=''` if you do not want to move images)
 
@@ -113,8 +113,8 @@ visual_recognition = VisualRecognitionV3(
 6). Assess model performance with `perf = pipeline_assess(...)`.
 
 * pred: image-level predictions returned by `pipeline_test`
-* stress_test, ns_test: paths to test set zip files
-* perf_save: path to csv file to which model performance metrics will be appended (defaults to `'/Results/Performance.csv'`)
+* stress_test, ns_test: paths to zip files containing stress and no_stress test set images
+* perf_save: path to csv file to which model performance metrics will be appended (defaults to `'Results/Performance.csv'`)
 
 > `Performance.csv` automatically updates itself on every run of `pipeline_assess` and documents performance metrics and test set paths. Review `Log.csv`and `Performance.csv` to ensure that each model was trained and tested with the correct image sets.
 
@@ -124,4 +124,4 @@ The [AUC (Area Under The Curve) ROC (Receiver Operating Characteristics) curve](
 
 Four-fold cross-validation helps assess generalizability. By calculating the standard deviation in ROC-AUC between the four folds, we can determine the extent to which performance metrics are sensitive to variations in data.
 
-High ROC-AUC and low standard deviation indicates that models demonstrate high seperability and high generalizability. 
+High ROC-AUCs and low standard deviations indicate that models demonstrate high seperability and high generalizability. 
