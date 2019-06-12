@@ -1,7 +1,7 @@
 Precision Ag
 ====
 
-This pipeline uses the IBM Watson Visual Recognition API to identify plants that have been subject to water deprivation. The pipeline uses drone images of crop fields taken in various spectra.
+This project applies the IBM Watson Visual Recognition API to multispectral drone images of crop fields in order to identify plants that have been subject to water deprivation. Many plant species begin to show signs of stress within hours of being cut off from water, but these variations often manifest in non-visual spectra such as near-infrared or ultraviolet and in patterns that are too subtle to recognize by intuition alone. Using cloud-based machine learning algorithms such as those powered by IBM, however, these early indicators can be brought to light. This project demonstrates how technologies such as IoT and cloud-based computing can be used to build responsive irrigation systems that optimize water allocation in real time, promoting sustainability and maximizing crop output.
 
 > Drone image taken in ultraviolet:
 ![Image1](https://github.com/danxfreeman/precision_ag/blob/master/IMG_7578.JPG)
