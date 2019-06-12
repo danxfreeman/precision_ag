@@ -21,9 +21,9 @@ Here is the basic workflow:
 
 Install the Watson API package by entering the command `pip install --upgrade ibm-watson` in Terminal
 
-Download the skeleton directory `precision_ag`
+Clone this repo to your local machine using https://github.com/danxfreeman/precision_ag.git
 
-Move original drone images to the subdirectory `Images`
+Move original drone images to the directory `Images`
 
 ## Crop Images in Labelbox
 
@@ -51,7 +51,12 @@ Move original drone images to the subdirectory `Images`
 
 > Because the drone takes multiple images of the same plot, it’s important that cropped images of the same plant don’t end up in the test set *and* the training set. `index.R` loops through each image of the same plot and assigns a numeric id to each plant based on its location. This way, for example, all images of plants 1 to 6 end up in the training set and all images of plants 7 and 8 end up in the test set.
 
-1). If neccessary, download required libraries by entering the commands `install.packages("spatstat")` and `install.packages("tidyverse")` into the console.
+1). Install packages, if neccessary
+
+```r
+install.packages("spatstat")
+install.packages("tidyverse")
+```
 
 2). Update the following arguments in `index.R` and run.
 
@@ -71,7 +76,7 @@ You can also modify data by manipulating the object `dat`. For example, you can 
 
 ## Model
 
-> The Watson API bills your account for every run of `pipeline_train` so ensure that previous steps were successful before moving on. The following checkpoints can help:
+> The Watson API bills your account for every run of `pipeline_train` so make sure that previous steps were successful before moving on. These simple checkpoints can help:
 > * `function2` confirms that each image has the same number of plants in each condition
 > * Each cropped image appears exactly once within the directory `Split`
 > * Cropped image names match directory names
@@ -120,7 +125,7 @@ visual_recognition = VisualRecognitionV3(
 
 ## Interpret Results
 
-The [AUC (Area Under The Curve) ROC (Receiver Operating Characteristics) curve](https://towardsdatascience.com/understanding-auc-roc-curve-68b2303cc9c5) is most direct measure of how well the model distinguishes between classes. An AUC of 0 means that the model mis-classified every image. When AUC is 0.5, model performance is equal to random chance. An excellect model has an AUC approaching 1.
+The [AUC (Area Under The Curve) ROC (Receiver Operating Characteristics) curve](https://towardsdatascience.com/understanding-auc-roc-curve-68b2303cc9c5) is most direct measure of how well the model distinguishes between classes, or the degree of seperability. An AUC of 0 means that the model mis-classified every image. When AUC is 0.5, model performance is equal to random chance. An excellect model has an AUC approaching 1.
 
 Four-fold cross-validation helps assess generalizability. By calculating the standard deviation in ROC-AUC between the four folds, we can determine the extent to which performance metrics are sensitive to variations in data.
 
