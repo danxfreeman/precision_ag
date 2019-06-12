@@ -51,7 +51,7 @@ Move original drone images to the directory `Images`
 
 > Because the drone takes multiple images of the same plot, it’s important that cropped images of the same plant don’t end up in the test set *and* the training set. `index.R` loops through each image of the same plot and assigns a numeric id to each plant based on its location. This way, for example, all images of plants 1 to 6 end up in the training set and all images of plants 7 and 8 end up in the test set.
 
-1). Install packages, if neccessary
+1). Install packages
 
 ```r
 install.packages("spatstat")
@@ -110,10 +110,7 @@ visual_recognition = VisualRecognitionV3(
 
 * modelID: modelID returned by `pipeline_train`
 * stress_test, ns_test: paths to zip files containing stress and no_stress test set images
-* pred_save: path to directory where image-level predictions will be saved
-* trained: path to directory to which images will be moved to after use (set `trained=''` if you do not want to move images)
-
-> Moving training and test sets after use ensures that they aren't accidentally re-used.
+* pred_save: path to directory where image-level predictions will be savedtr
 
 6). Assess model performance with `perf = pipeline_assess(...)`.
 
@@ -122,6 +119,12 @@ visual_recognition = VisualRecognitionV3(
 * perf_save: path to csv file to which model performance metrics will be appended (defaults to `'Results/Performance.csv'`)
 
 > `Performance.csv` automatically updates itself on every run of `pipeline_assess` and documents performance metrics and test set paths. Review `Log.csv`and `Performance.csv` to ensure that each model was trained and tested with the correct image sets.
+
+> If necessary, you can get model information directly from the cloud using the command:
+
+```python
+visual_recognition.list_classifiers(verbose = True).get_result()
+```
 
 ## Interpret Results
 
