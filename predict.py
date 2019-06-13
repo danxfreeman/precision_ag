@@ -136,16 +136,13 @@ def save(dic, path):
     df.to_csv(path)
 
 # Wrapper function trains model and returns modelID.
-def pipeline_train(model_name, stress_train, ns_train, log, parent = os.getcwd()):
+def pipeline_train(model_name, stress_train, ns_train, log = 'Results/Log.csv'):
     #
     # Args:
     #   model_name: what to name the model.
     #   stress_train, ns_train: paths to zip files containing training set images.
-    #   perf_save: path to csv file to which model information will be appended.
-    #   parent: working directory (default to current).
+    #   log: path to csv file to which model information will be appended.
     #
-    # Change directory.
-    os.chdir(parent)
     # Train model.
     modelID = train_model(model_name, ns_train, stress_train)['classifier_id']
     # Update training log.
@@ -156,13 +153,12 @@ def pipeline_train(model_name, stress_train, ns_train, log, parent = os.getcwd()
     return(modelID)
     
 # Wrapper function tests model and returns performance metrics.
-def pipeline_test(modelID, stress_test, ns_test, pred_save, perf_save, trained):
+def pipeline_test(modelID, stress_test, ns_test, pred_save = 'Results/'):
     #
     # Args:
-    #   modelID: modelID returned by 'pipeline_train'
+    #   modelID: modelID returned by 'pipeline_train'.
     #   stress_test, ns_test: paths to zip files containing test set images.
     #   pred_save: path to directory where image-level predictions will be saved.
-    #   perf_save: path to csv file to which model performance metrics will be appended.
     #   trained: path to directory where images will be moved to after use.
     #
     # Test model.
@@ -170,7 +166,17 @@ def pipeline_test(modelID, stress_test, ns_test, pred_save, perf_save, trained):
     # Save predictions.
     full_path = os.path.join(pred_save, modelID + '.csv')
     pred.to_csv(full_path)
-    # Calculate and return performance metrics.
+    # Return predictions.
+    return(pred)
+
+def pipeline_assess(pred, stress_test, ns_test, perf_save = 'Results/Performance.csv'):
+    #
+    # Args:
+    #   pred: image-level predictions return by pipeline_test.
+    #   stress_test, ns_test: paths to zip files containing test set images.
+    #   perf_save: path to csv file to which model performance metrics will be appended.
+    #
+    # Calculate performance metrics.
     perf = performance(pred)
     # Append image paths and timestamp.
     perf['stress_test'] = stress_test
@@ -178,97 +184,6 @@ def pipeline_test(modelID, stress_test, ns_test, pred_save, perf_save, trained):
     perf['time'] = time.ctime()
     # Append to 'perf_save' csv.
     save(perf, perf_save)
-    # Moved images to 'trained' directory.
-#    if trained != '':
-#        os.rename(stress_train, os.path.join(trained, os.path.basename(stress_train)))
-#        os.rename(ns_train, os.path.join(trained, os.path.basename(ns_train)))
-#        os.rename(stress_test, os.path.join(trained, os.path.basename(stress_test)))
-#        os.rename(ns_test, os.path.join(trained, os.path.basename(ns_test)))
     # Return performance metrics.
     return(perf)
 
-# Example ----
-
-# MAPIR Buddeleia: NS v. HWS k1 (tested).
-# MAPIR Buddeleia: NS v. HWS k2 (tested).
-model_name = 'MAPIR_bud_HWS_k2'
-parent = '/Users/danielfreeman/Desktop/ag/'
-stress_train = 'Split/MAPIR_FLT2_Buddleia_high_water_stress_k2_train.zip'
-ns_train = 'Split/MAPIR_FLT2_Buddleia_no_stress_k2_train.zip'
-stress_test = 'Split/MAPIR_FLT2_Buddleia_high_water_stress_k2_test.zip'
-ns_test = 'Split/MAPIR_FLT2_Buddleia_no_stress_k2_test.zip'
-pred_save = 'Results/'
-perf_save = 'Results/performance.csv'
-trained = 'Trained/'
-#modelID = pipeline_train(model_name, stress_train, ns_train, log, parent)
-#modelID = 'MAPIR_bud_HWS_k1_1318838362'
-modelID = 'MAPIR_bud_HWS_k2_1941215476'
-wait(modelID)
-perf = pipeline_test(modelID, stress_train, ns_train, stress_test, ns_test,
-                     pred_save, perf_save, trained)
-perf
-
-# MAPIR HQ: NS v. HWS k1 (tested).
-# MAPIR HQ: NS v. HWS k2 (tested).
-# MAPIR HQ: NS v. HWS k3 (tested).
-# MAPIR HQ: NS v. HWS k4 (tested).
-model_name = 'MAPIR_hq_HWS_k4'
-parent = '/Users/danielfreeman/Desktop/ag/'
-stress_train = 'Split/MAPIR_FLT1_Hydrangeo quercifolia_high_water_stress_k4_train.zip'
-ns_train = 'Split/MAPIR_FLT1_Hydrangeo quercifolia_no_stress_k4_train.zip'
-stress_test = 'Split/MAPIR_FLT1_Hydrangeo quercifolia_high_water_stress_k4_test.zip'
-ns_test = 'Split/MAPIR_FLT1_Hydrangeo quercifolia_no_stress_k4_test.zip'
-pred_save = 'Results/'
-perf_save = 'Results/performance.csv'
-trained = 'Trained/'
-#modelID = pipeline_train(model_name, stress_train, ns_train, parent)
-#modelID = 'MAPIR_hq_HWS_k1_1329753609' 
-#modelID = 'MAPIR_hq_HWS_k1_1315858108' # should be k2
-#modelID = 'MAPIR_hq_HWS_k3_240431902'
-#modelID = 'MAPIR_hq_HWS_k4_1413776194'
-wait(modelID)
-perf = pipeline_test(modelID, stress_train, ns_train, stress_test, ns_test,
-                     pred_save, perf_save, trained)
-perf
-
-# MAPIR HQ: NS v. S k1 (tested).
-# MAPIR HQ: NS v. S k2 (tested).
-# MAPIR HQ: NS v. S k3 (tested).
-# MAPIR HQ: NS v. S k4 (tested).
-model_name = 'MAPIR_hq_k4'
-parent = '/Users/danielfreeman/Desktop/ag/'
-stress_train = 'Split_all_stress/MAPIR_FLT1_Hydrangeo quercifolia_stress_k4_train.zip'
-ns_train = 'Split_all_stress/MAPIR_FLT1_Hydrangeo quercifolia_no_stress_k4_train.zip'
-stress_test = 'Split_all_stress/MAPIR_FLT1_Hydrangeo quercifolia_stress_k4_test.zip'
-ns_test = 'Split_all_stress/MAPIR_FLT1_Hydrangeo quercifolia_no_stress_k4_test.zip'
-pred_save = 'Results/'
-perf_save = 'Results/performance.csv'
-trained = 'Trained/'
-#modelID = pipeline_train(model_name, stress_train, ns_train, parent)
-#modelID = 'MAPIR_hq_k1_279069122'
-#modelID = 'MAPIR_hq_k2_837039308'
-#modelID = 'MAPIR_hq_k3_1948259550'
-#modelID = 'MAPIR_hq_k4_1093481789'
-wait(modelID)
-perf = pipeline_test(modelID, stress_train, ns_train, stress_test, ns_test,
-                     pred_save, perf_save, trained)
-perf
-
-# MAPIR ALL: NS v. S k1 (tested).
-# MAPIR ALL: NS v. S k2 (tested).
-model_name = 'MAPIR_all_k2'
-parent = '/Users/danielfreeman/Desktop/ag/'
-stress_train = 'Split_all_species/MAPIR_FLT1_pool_stress_k2_train.zip'
-ns_train = 'Split_all_species/MAPIR_FLT1_pool_no_stress_k2_train.zip'
-stress_test = 'Split_all_species/MAPIR_FLT1_pool_stress_k2_test.zip'
-ns_test = 'Split_all_species/MAPIR_FLT1_pool_no_stress_k2_test.zip'
-pred_save = 'Results/'
-perf_save = 'Results/performance.csv'
-trained = 'Trained/'
-#modelID = pipeline_train(model_name, stress_train, ns_train, parent)
-#modelID = 'MAPIR_all_k1_134415419'
-#modelID = 'MAPIR_all_k2_887808858'
-wait(modelID)
-perf = pipeline_test(modelID, stress_train, ns_train, stress_test, ns_test,
-                     pred_save, perf_save, trained)
-perf
