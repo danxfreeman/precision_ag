@@ -5,7 +5,7 @@ library(tidyverse)
 # Specify paths.
 coord_path <- "/Users/danielfreeman/Desktop/ag/coord.csv" # csv file created by work_data.py
 image_path <- "/Users/danielfreeman/Desktop/ag/Cropped/" # directory containing cropped images
-to_path <- "/Users/danielfreeman/Desktop/ag/Split_all_species/" # directory where train and test sets will be stored
+to_path <- "/Users/danielfreeman/Desktop/ag/Split/" # directory where train and test sets will be stored
 
 # Upload coordinates.
 dat <- read.csv(coord_path)
