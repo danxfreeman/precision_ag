@@ -45,7 +45,11 @@ Move original drone images to the directory `Images`
 
 1.) Pull coordinates from Labelbox...
 
+Using GraphQL API provided by Labelbox, we were able to pull all the bounding boxes data to our local computer for processing. The JSON output provided by the API was processed using python. The output was converted into a simple list which was then passed onto the crop image function.
+
 2.) Crop images...
+
+The images were cropped using the opencv package available for python. The data was received and processed through Labelbox API and then each field image was cropped multiple times, for each plant that was labeled in the image. The folder structure was automatically created through script and this provided us with training dataset. Another function was created which reshaped each small plant image in order to furthur crop them in smaller pieces in case we need more training images for individual plant types and conditions.
 
 ## Split Cropped Images
 
