@@ -1,7 +1,7 @@
 Precision Ag
 ====
 
-This project applies the IBM Watson Visual Recognition API to multispectral drone images of crop fields in order to identify plants that have been subject to water deprivation. Many plant species begin to show signs of stress within hours of being cut off from water, but these deviations often manifest in non-visual spectra and in patterns too subtle to recognize by intuition alone. Cloud-based machine learning algorithms such as those powered by IBM can help bring these early indicators to light. This project demonstrates how technologies such as IoT and cloud-based computing can be used to build responsive irrigation systems that optimize water allocation in real time, promoting water sustainability and maximizing crop output.
+This project applies the IBM Watson Visual Recognition API to multispectral drone images of crop fields in order to identify plants that have been subject to water deprivation. Many plant species begin to show signs of stress within hours of being cut off from water, but these deviations often manifest in non-visual spectra and in patterns too subtle to recognize by intuition alone. Cloud-based machine learning algorithms such as those powered by IBM can help bring these early indicators to light. This project demonstrates how technologies such as IoT and cloud-based computing can be used to build responsive irrigation systems that optimize resource allocation in real time and maximize sustainable water use.
 
 > Drone image taken in ultraviolet:
 ![Image1](https://github.com/danxfreeman/precision_ag/blob/master/IMG_7578.JPG)
@@ -27,13 +27,11 @@ Move original drone images to the directory `Images`
 
 ## Crop Images in Labelbox
 
-> Summary...
-
-1.) Set up Labelbox...
+1.) Set up Labelbox
 
 > Each image of the same plot must have the same orientation. Rotate image if necessary.
 
-2.) Draw bounding boxes...
+2.) Draw bounding boxes
 
 > Because subsequent functions perform 1:1 matching, it’s important that each image from the same dataset contains the same number of plants in each condition (for example, all MAPIR FLT1 images have exactly five Buddleia plants labelled high water stress). This means that if part of the plot is cut off in one image, those plants should not be labelled in any other image.
 
@@ -41,13 +39,11 @@ Move original drone images to the directory `Images`
 
 ## Pull Cropped Images with the Labelbox API
 
-> Summary...
-
-1.) Pull coordinates from Labelbox...
+1.) Pull coordinates from Labelbox
 
 Using GraphQL API provided by Labelbox, we were able to pull all the bounding boxes data to our local computer for processing. The JSON output provided by the API was processed using python. The output was converted into a simple list which was then passed onto the crop image function.
 
-2.) Crop images...
+2.) Crop images
 
 The images were cropped using the opencv package available for python. The data was received and processed through Labelbox API and then each field image was cropped multiple times, for each plant that was labeled in the image. The folder structure was automatically created through script and this provided us with training dataset. Another function was created which reshaped each small plant image in order to furthur crop them in smaller pieces in case we need more training images for individual plant types and conditions.
 
