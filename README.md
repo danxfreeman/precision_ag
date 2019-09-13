@@ -1,7 +1,7 @@
-Precision Ag
+Watson in the Woods: Using Cloud-bsed Artifical Intelligence to Identify Early Indicators of Water Stress
 ====
 
-This project applies the IBM Watson Visual Recognition API to multispectral drone images of crop fields in order to identify plants that have been subject to water deprivation. Many plant species begin to show signs of stress within hours of being cut off from water, but these deviations often manifest in non-visual spectra and in patterns too subtle to recognize by intuition alone. Cloud-based machine learning algorithms such as those powered by IBM can help bring these early indicators to light. This project demonstrates how technologies such as IoT and cloud-based computing can be used to build responsive irrigation systems that optimize resource allocation in real time and maximize sustainable water use.
+This project applies the IBM Watson Visual Recognition API to multispectral drone images of crop fields in order to identify plants that have been subject to water deprivation, an important step towards the development of responsive irrigation systems that optimize water allocation in real time. Many plant species begin to show signs of stress within hours of being cut off from water, but these deviations often manifest in non-visual spectra and in patterns too subtle to recognize by intuition alone. Cloud-based machine learning algorithms such as those powered by IBM can help bring these early indicators to light. This project demonstrates how technologies such as IoT and cloud-based computing can be used to build responsive irrigation systems that optimize resource allocation in real time and maximize sustainable water use.
 
 > Drone image taken in ultraviolet:
 ![Image1](https://github.com/danxfreeman/precision_ag/blob/master/IMG_7578.JPG)
@@ -14,20 +14,20 @@ Here is the basic workflow:
 * Upload images to Labelbox and draw bounding boxes
 * Get bounding box coordinates and crop images with `work_data.py`
 * Group images into test and training sets with `index.R`
-* Train, test, and assess models with `predict.py`
+* Train, test, and assess models with `train_test.py`
 * Interpret results
 
 ## Setup
 
 Install the Watson API package by entering the command `pip install --upgrade ibm-watson` in Terminal
 
-Clone this repo to your local machine using https://github.com/danxfreeman/precision_ag.git
+Clone this repo to your local machine
 
-Move original drone images to the directory `Images`
+Create a directory `Images` containing original drone images
 
 ## Crop Images in Labelbox
 
-1.) Set up Labelbox
+1.) Upload images to Labelbox and create custom interface
 
 > Each image of the same plot must have the same orientation. Rotate image if necessary.
 
@@ -35,17 +35,15 @@ Move original drone images to the directory `Images`
 
 > Because subsequent functions perform 1:1 matching, it’s important that each image from the same dataset contains the same number of plants in each condition (for example, all MAPIR FLT1 images have exactly five Buddleia plants labelled high water stress). This means that if part of the plot is cut off in one image, those plants should not be labelled in any other image.
 
-3.) Use the functions `function1` and `function2` to ensure that plots are correctly labelled before moving on.
-
 ## Pull Cropped Images with the Labelbox API
 
-1.) Pull coordinates from Labelbox
+1.) Pull coordinates from Labelbox using `get_coordinates.py`
 
-Using GraphQL API provided by Labelbox, we were able to pull all the bounding boxes data to our local computer for processing. The JSON output provided by the API was processed using python. The output was converted into a simple list which was then passed onto the crop image function.
+> Uses the GraphQL API provided by Labelbox to return the pixel coordinates of each bounding box with respect to the original drone images.
 
-2.) Crop images
+2.) Crop images with `crop_images.py`
 
-The images were cropped using the opencv package available for python. The data was received and processed through Labelbox API and then each field image was cropped multiple times, for each plant that was labeled in the image. The folder structure was automatically created through script and this provided us with training dataset. Another function was created which reshaped each small plant image in order to furthur crop them in smaller pieces in case we need more training images for individual plant types and conditions.
+> Images will be automatically sorted in subdirectories specifying the species and stress condition.
 
 ## Split Cropped Images
 
@@ -60,7 +58,7 @@ install.packages("tidyverse")
 
 2). Update the following arguments in `index.R` and run.
 
-* coord_path: path to csv file created by `work_data.py`
+* coord_path: path to csv file created by `get_coordinates.py`
 * image_path: path to directory containing cropped images (may contain subdirectories)
 * to_path: path to directory where split images will be saved (must already exist)
 
@@ -72,12 +70,12 @@ install.packages("tidyverse")
 > * Match each row in `coord_path` with each image in `image_path` using the column `df$id` and the last number in the image name (e.g. `*_123.JPG`).
 > * Group images into four-fold training and test sets and zip.
 
-You can also modify data by manipulating the object `dat`. For example, you can delete rows corresponding to a certain dataset or pool different stress conditions into one. See `# Modify data` for examples.
+You can also modify data by manipulating the object `dat`. For example, you can delete rows corresponding to a certain species or pool different stress conditions into one. See `# Modify data` for examples.
 
 ## Model
 
 > The Watson API bills your account for every run of `pipeline_train` so make sure that previous steps were successful before moving on. These simple checkpoints can help:
-> * `function2` confirms that each image has the same number of plants in each condition
+> * Confirm that each image has the same number of plants in each condition
 > * Each cropped image appears exactly once within the directory `Split`
 > * Cropped image names match directory names
 > * Training and test sets contain multiple images of the same plant (you can sometimes tell by looking at the plant's shape)
