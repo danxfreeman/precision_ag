@@ -35,7 +35,6 @@ Create a directory `Images` containing original drone images
 
 > Because subsequent functions perform 1:1 matching, it’s important that each image from the same dataset contains the same number of plants in each condition (for example, all MAPIR FLT1 images have exactly five Buddleia plants labelled high water stress). This means that if part of the plot is cut off in one image, those plants should not be labelled in any other image.
 
-
 ![labelbox](https://github.com/danxfreeman/precision_ag/blob/master/images/labelbox.gif)
 > Custom Labelbox interface at work
 
@@ -49,7 +48,7 @@ Create a directory `Images` containing original drone images
 
 > Images will be automatically sorted in subdirectories specifying the species and stress condition. Check that each image has the same number of plants in each species/condition group. If not, go back to Labelbox.
 
-![coordinates](https://github.com/danxfreeman/precision_ag/blob/master/images/coordinates.JPG)
+![coordinates](https://github.com/danxfreeman/precision_ag/blob/master/images/coordinates.jpg)
 > Pixel coordinates returned by GraphQL API. The cropping function matches each set of coordinates to the respective image in 'Images'.
 
 ## Split Cropped Images
