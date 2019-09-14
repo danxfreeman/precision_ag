@@ -4,10 +4,10 @@ Watson in the Woods: Using Cloud-bsed Artifical Intelligence to Identify Early I
 This project applies the IBM Watson Visual Recognition API to multispectral drone images of crop fields in order to identify plants that have been subject to water deprivation, an important step towards the development of responsive irrigation systems that optimize water allocation in real time. Many plant species begin to show signs of stress within hours of being cut off from water, but these deviations often manifest in non-visual spectra and in patterns too subtle to recognize by intuition alone. Cloud-based machine learning algorithms such as those powered by IBM can help bring these early indicators to light. This project demonstrates how technologies such as IoT and cloud-based computing can be used to build responsive irrigation systems that optimize resource allocation in real time and maximize sustainable water use.
 
 > Drone image taken in ultraviolet:
-![Image1](https://github.com/danxfreeman/precision_ag/blob/master/images/IMG_7578.JPG)
+![Image1](https://github.com/danxfreeman/precision_ag/blob/master/images/infrared.JPG)
 
 > Drone image taken in near-infrared:
-![Image2](https://github.com/danxfreeman/precision_ag/blob/master/images/2017_0810_145135_118.JPG)
+![Image2](https://github.com/danxfreeman/precision_ag/blob/master/images/uv.JPG)
 
 Here is the basic workflow:
 
@@ -35,7 +35,7 @@ Create a directory `Images` containing original drone images
 
 > Because subsequent functions perform 1:1 matching, it’s important that each image from the same dataset contains the same number of plants in each condition (for example, all MAPIR FLT1 images have exactly five Buddleia plants labelled high water stress). This means that if part of the plot is cut off in one image, those plants should not be labelled in any other image.
 
-![screencast](https://github.com/danxfreeman/precision_ag/blob/master/images/screencast.gif)
+![labelbox](https://github.com/danxfreeman/precision_ag/blob/master/images/labelbox.gif)
 > Custom Labelbox interface at work
 
 ## Pull Cropped Images with the Labelbox API
