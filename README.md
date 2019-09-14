@@ -35,6 +35,7 @@ Create a directory `Images` containing original drone images
 
 > Because subsequent functions perform 1:1 matching, it’s important that each image from the same dataset contains the same number of plants in each condition (for example, all MAPIR FLT1 images have exactly five Buddleia plants labelled high water stress). This means that if part of the plot is cut off in one image, those plants should not be labelled in any other image.
 
+
 ![labelbox](https://github.com/danxfreeman/precision_ag/blob/master/images/labelbox.gif)
 > Custom Labelbox interface at work
 
@@ -130,10 +131,10 @@ visual_recognition = VisualRecognitionV3(
 visual_recognition.list_classifiers(verbose = True).get_result()
 ```
 
-![predictions](https://github.com/danxfreeman/precision_ag/blob/master/images/predictions.gif
+![predictions](https://github.com/danxfreeman/precision_ag/blob/master/images/predictions.jpg)
 > Predictions returned for each image
 
-![performance](https://github.com/danxfreeman/precision_ag/blob/master/images/performance.gif)
+![performance](https://github.com/danxfreeman/precision_ag/blob/master/images/performance.jpg)
 > A performance log is automatically updated on each run of `pipeline_assess`
 
 ## Interpret Results
