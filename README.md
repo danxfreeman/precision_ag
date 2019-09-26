@@ -1,4 +1,4 @@
-Watson in the Woods: Using Cloud-bsed Artifical Intelligence to Identify Early Indicators of Water Stress
+Watson on the Farm: Using Cloud-bsed Artifical Intelligence to Identify Early Indicators of Water Stress
 ====
 
 This project applies the IBM Watson Visual Recognition API to multispectral drone images of crop fields in order to identify plants that have been subject to water deprivation, an important step towards the development of responsive irrigation systems that optimize water allocation in real time. Many plant species begin to show signs of stress within hours of being cut off from water, but these deviations often manifest in non-visual spectra and in patterns too subtle to recognize by intuition alone. Cloud-based machine learning algorithms such as those powered by IBM can help bring these early indicators to light. This project demonstrates how technologies such as IoT and cloud-based computing can be used to build responsive irrigation systems that optimize resource allocation in real time and maximize sustainable water use.
