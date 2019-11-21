@@ -5,8 +5,9 @@ This project applies the IBM Watson Visual Recognition API to multispectral dron
 
 [Freeman, D.; Gupta, S.; Smith, D.H.; Maja, J.M.; Robbins, J.; Owen, J.S., Jr.; Peña, J.M.; de Castro, A.I. Watson on the Farm: Using Cloud-Based Artificial Intelligence to Identify Early Indicators of Water Stress. Remote Sens. 2019, 11, 2645.](https://www.mdpi.com/572688)
 
-> Drone image taken in ultraviolet:
+> Example of drone image taken in near-infrared:
 ![Image1](https://github.com/danxfreeman/precision_ag/blob/master/images/infrared.JPG)
+
 ![Image2](https://github.com/danxfreeman/precision_ag/blob/master/images/uv.JPG)
 
 Here is the basic workflow:
