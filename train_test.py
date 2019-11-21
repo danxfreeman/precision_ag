@@ -9,7 +9,7 @@ from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_sco
 # Access cloud.
 visual_recognition = VisualRecognitionV3(
     version = '2018-03-19',
-    iam_apikey = 'uAuf4MQpv4sHFcqjfdlnMLx2RGqpM1OIyGQsGklZ8M7L'
+    iam_apikey = 'apikey'
 )
 
 # Train model.
