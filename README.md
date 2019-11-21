@@ -7,7 +7,7 @@ This project applies the IBM Watson Visual Recognition API to multispectral dron
 
 > Example of drone image taken in near-infrared:
 ![Image1](https://github.com/danxfreeman/precision_ag/blob/master/images/infrared.JPG)
- 
+>
 ![Image2](https://github.com/danxfreeman/precision_ag/blob/master/images/uv.JPG)
 
 Here is the basic workflow:
