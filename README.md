@@ -12,7 +12,7 @@ This project applies the IBM Watson Visual Recognition API to multispectral dron
 Here is the basic workflow:
 
 * Upload images to Labelbox and draw bounding boxes
-* Get bounding box coordinates and crop images with `work_data.py`
+* Get bounding box coordinates and crop images with `get_coordinates.py`
 * Group images into test and training sets with `index.R`
 * Train, test, and assess models with `train_test.py`
 * Interpret results
